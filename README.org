@@ -1,0 +1,11 @@
+#+TITLE: pasnomitator
+
+* Description
+https://github.com/toutobu/annotator/issues/18#issuecomment-630002153
+https://github.com/toutobu/annotator/issues/18#issuecomment-630022347
+
+* Development
+** Test
+#+begin_src bash
+$ docker-compose run app sh -c 'poetry run python -m unittest discover'
+#+end_src
