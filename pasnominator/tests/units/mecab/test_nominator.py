@@ -7,6 +7,7 @@ from pasnominator.mecab import nominator
 class NominatorTestCase(unittest.TestCase):
     def test_analyze(self):
         result = list(nominator.analyze('太郎が花子にリンゴをあげた。'))
+
         self.assertIsInstance(result[0], PASUnit)
         self.assertEqual(result[0].text, '太郎')
         self.assertIsInstance(result[0].morphemes, list)
@@ -48,8 +49,3 @@ class NominatorTestCase(unittest.TestCase):
         self.assertEqual(result[8].text, '。')
         self.assertEqual(len(result[8].morphemes), 1)
         self.assertEqual(result[8].morphemes[0].surface, '。')
-
-    def test_analyze_predicate_unit(self):
-        result = list(nominator.analyze('太郎はリンゴを導入する。'))
-        print(result)
-        pass

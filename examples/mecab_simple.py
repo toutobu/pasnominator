@@ -1,4 +1,4 @@
-from posnominator.mecab import nominator
+from pasnominator import nominator
 
 
 if __name__ == '__main__':
@@ -6,6 +6,8 @@ if __name__ == '__main__':
     # 最悪、形態素単位(a)、できれば述語単位(b)、できれば格関係(c)まで付与
     # b までできれば、paselector としては十分(c は要らない？)
     # c までできると、アノテーションが楽なはず
+
+    # TODO: 最新の仕様に更新する
     print(nominator.analyze('太郎が花子にリンゴをあげた。'))
     # [
     #   PASUnit(
