@@ -27,9 +27,7 @@ RUN apk add --no-cache make gcc g++ swig \
   && cd /opt \
   && rm -rf \
      mecab-${MECAB_VERSION}.tar.gz \
-     mecab-${MECAB_VERSION} \
-     mecab-ipadic-${MECAB_IPADIC_VERSION}.tar.gz zxvf \
-     mecab-ipadic-${MECAB_IPADIC_VERSION}
+     mecab-ipadic-${MECAB_IPADIC_VERSION}.tar.gz zxvf
 
 ADD pyproject.toml /app/pyproject.toml
 
