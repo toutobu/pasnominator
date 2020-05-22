@@ -1,2 +1,2 @@
 from .mecab import nominator
-from .unit import Morpheme, PASUnit, POS
+from .unit import Morpheme, PASUnit, POS, UnitType

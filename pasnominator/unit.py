@@ -2,10 +2,20 @@ from collections import namedtuple
 from enum import Enum
 
 
+class UnitType(Enum):
+    PREDICATE = '述語'
+
+    OTHER = 'その他'
+
+    def __repr__(self):
+        return '<%s.%s>' % (self.__class__.__name__, self.name)
+
+
 class PASUnit(namedtuple('PASUnit', [
     'text',
-    'morphemes'
-])):
+    'morphemes',
+    'unit'
+], defaults=(UnitType.OTHER,))):
     pass
 
 

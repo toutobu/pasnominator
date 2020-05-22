@@ -1,6 +1,6 @@
 import unittest
 
-from pasnominator import Morpheme, PASUnit
+from pasnominator import Morpheme, PASUnit, UnitType
 from pasnominator.mecab import nominator
 
 
@@ -41,6 +41,7 @@ class NominatorTestCase(unittest.TestCase):
         self.assertEqual(result[6].text, 'あげ')
         self.assertEqual(len(result[6].morphemes), 1)
         self.assertEqual(result[6].morphemes[0].surface, 'あげ')
+        self.assertEqual(result[6].unit, UnitType.PREDICATE)
 
         self.assertEqual(result[7].text, 'た')
         self.assertEqual(len(result[7].morphemes), 1)
