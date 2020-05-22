@@ -1,7 +1,7 @@
 import logging
 import MeCab
 
-from ..unit import Morpheme, PASUnit, POS
+from ..unit import Morpheme, PASUnit, POS, UnitType
 
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,17 @@ def analyze(document):
             # 「サ変名詞+"する"」の場合はこれを述語とする [乾 2013]
             logger.debug(f'Rule: 「サ変名詞+"する"」')
             compound = morphemes[start_idx_of_compound_term(idx - 1):idx]
-            yield make_pas_unit(compound + [current])
+            yield make_pas_unit(
+                compound + [current],
+                unit=UnitType.PREDICATE)
+        elif (idx > 0 and morphemes[idx - 1].pos == POS.NOUN.value
+                and current.pos == POS.AUXILIARY_VERB.value
+                and current.surface in ('だ', 'だっ')
+                and current.form == 'だ'):
+            # 「名詞句+助動詞("だ")」の「名詞句」は述語のタグをつける [乾 2013]
+            compound = morphemes[start_idx_of_compound_term(idx - 1):idx]
+            yield make_pas_unit(compound, unit=UnitType.PREDICATE)
+            yield make_pas_unit([current])
         elif (current.pos == POS.VERB.value
               and idx + 2 < len(morphemes)
               and morphemes[idx + 1].pos == POS.PARTICLE.value
@@ -43,7 +53,8 @@ def analyze(document):
             # テアル形の場合は，「述語+てある」を原型 と考えてタグを付与する．[乾 2013]
             compound = morphemes[start_idx_of_compound_term(idx - 1):idx]
             yield make_pas_unit(
-                compound + [current] + morphemes[idx + 1:idx + 3])
+                compound + [current] + morphemes[idx + 1:idx + 3],
+                unit=UnitType.PREDICATE)
             # 「て」「ある」分 idx を進める
             idx += 2
         elif not is_noun_or_alphabet_symbol(current):
@@ -52,7 +63,12 @@ def analyze(document):
             if len(compound) > 0:
                 yield make_pas_unit(compound)
 
-            yield make_pas_unit([current])
+            unit = UnitType.OTHER
+
+            if current.pos in (POS.VERB.value, POS.ADJECTIVE.value):
+                unit = UnitType.PREDICATE
+
+            yield make_pas_unit([current], unit=unit)
 
         idx += 1
 
@@ -66,10 +82,12 @@ def is_s_irregular_noun(morpheme):
     return morpheme.pos == POS.NOUN.value and morpheme.subpos1 == 'サ変接続'
 
 
-def make_pas_unit(morphemes):
-    return PASUnit(
+def make_pas_unit(morphemes, unit=UnitType.OTHER):
+    pas_unit = PASUnit(
         text=''.join(m.surface for m in morphemes),
         morphemes=morphemes)
+    # UnitType.OTHER 以外のときだけ unit タイプ情報を付与する
+    return pas_unit if unit is UnitType.OTHER else pas_unit._replace(unit=unit)
 
 
 def make_morpheme(chunk):
